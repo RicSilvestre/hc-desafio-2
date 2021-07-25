@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    main {
+      display: flex;
+      justify-content: space-between;
+      height: calc(100vh - 50px);
+    }
+
+    .products {
+      width: 70%;
+      display: flex;
+      justify-content: space-around;
+      flex-wrap: wrap;
+      align-items: center;
+      padding-left: 5%;
+    }
+
+    .customer {
+      width: 20%;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      padding: 0 5%;
+    }
+
+    @media (max-width: 760px) {
+      .customer, .products {
+        width: 100%;
+        align-items: center;
+        padding-left: 0;
+      }
+
+      main {
+        flex-direction: column-reverse;
+      }
+    }
+
+    .product {
+      width: auto;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .product:not(:first-child) {
+      margin-left: 1rem;
+    }
+
+    .img-wrapper {
+      display: flex;
+      height: 30vh;
+    }
+
+    .img-wrapper img {
+      max-width: 100%;
+      flex-grow: 1;
+      max-height: 100%;
+      min-height: auto;
+    }
+
+    header {
+      
+      height: 50px;
+      background-color: black;
+      color: white;
+      text-align: center;
+    }
+
+    button, input[type="submit"] {
+      background-color: #444444;
+      color: white;
+      height: 30px;
+      width: 30px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    button:hover, input[type="submit"]:hover {
+      filter: brightness(1.3);
+    }
+
+    .customer {
+      background-color: #777777;
+    }
+
+    .cst-info > * {
+      margin-bottom: 1vh;
+    }
+
+    .cart-img img {
+      max-width: 100px;
+    }
+  </style>
+  <header>
+    <h1>Game Store</h1>
+  </header>
+  <main>
+    <div class="products">
+      <div class="product" id="1">
+        <div class="img-wrapper">
+          <img src="https://i.zst.com.br/thumbs/12/a/15/186841451.jpg">
+        </div>
+        <h2>XBOX One</h2>
+        <h3>R$ 5000</h3>
+        <div data-product="xbox">
+          <button data-value="decrease">-</button>
+          <button data-value="increase">+</button>
+        </div>
+      </div>
+      <div class="product" id="2">
+        <div class="img-wrapper">
+          <img src="https://d3ddx6b2p2pevg.cloudfront.net/Custom/Content/Products/10/15/1015831_console-nintendo-switch-com-joy-con-neon-32gb-processador-nvidia-tegra-customizado-tela-lcd-6-2-multitoque-wi-fi-bluetooth-bateria-4310mah-hac001_z1_637569389318643101.jpg">
+        </div>
+        <h2>Nintendo Switch</h2>
+        <h3>R$ 5000</h3>
+        <div data-product="nintendo">
+          <button data-value="decrease">-</button>
+          <button data-value="increase">+</button>
+        </div>
+      </div>
+      <div class="product" id="3">
+        <div class="img-wrapper">
+          <img src="https://blog.br.playstation.com/tachyon/sites/4/2020/11/05_2_Kz_3AA_C.jpeg?resize=1088%2C612&crop_strategy=smart">
+        </div>
+        <h2>Playstation 5</h2>
+        <h3>R$ 5000</h3>
+        <div data-product="ps">
+          <button data-value="decrease">-</button>
+          <button data-value="increase">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="customer">
+      <h2>Cliente</h2>
+      <div class="carrinho">
+        <div class="cart-img">
+          <img src="./carrinho-de-compras.png" alt="">
+        </div>
+        <div class="quantidade">
+          <h4>Itens no carrinho:</h4>
+          <h4 id="n-carrinho">0</h4>
+        </div>
+      </div>
+      <div class="cst-info" style="display: flex; flex-direction: column">
+        <input type="text" name="cliente" placeholder="Nome" id="cliente" style="flex-grow: 1">
+        <textarea name="" id="endereço" rows="5" placeholder="Endereço" style="flex-grow: 1"></textarea>
+        <input id="enviar-info" type="submit" value="Enviar informações" style="flex-grow: 1; width: 100%">
+      </div>
+    </div>
+  </main>
+  <script>
+    let psn = 0;
+    let xboxn = 0;
+    let nintn = 0;
+    let cart = 0;
+
+    const increases = document.querySelectorAll("button[data-value='increase'");
+    const decreases = document.querySelectorAll("button[data-value='decrease'");
+    const nCarrinho = document.getElementById("n-carrinho");
+    const cliente = document.getElementById("cliente");
+    const endereco = document.getElementById("endereço");
+    const infos = document.getElementById("enviar-info");
+
+    increases.forEach(increase => increase.addEventListener("click", e => {
+      const consol = e.target.parentElement.dataset.product;
+      if (consol == "xbox") {
+        ++xboxn;
+        window.localStorage.setItem("Xbox One", xboxn);
+      } else if (consol == "ps") {
+        ++psn;
+        window.localStorage.setItem("Playstation 5", psn);
+      } else {
+        ++nintn;
+        window.localStorage.setItem("Nintendo Switch", nintn);
+      }
+      ++cart;
+      window.localStorage.setItem("Carrinho", cart);
+      nCarrinho.innerText = cart;
+    }))
+
+    decreases.forEach(decrease => decrease.addEventListener("click", e => {
+      const consol = e.target.parentElement.dataset.product;
+      if (consol == "xbox") {
+        --xboxn;
+        window.localStorage.setItem("Xbox One", xboxn);
+      } else if (consol == "ps") {
+        --psn;
+        window.localStorage.setItem("Playstation 5", psn);
+      } else {
+        --nintn;
+        window.localStorage.setItem("Nintendo Switch", nintn);
+      }
+      --cart;
+      window.localStorage.setItem("Carrinho", cart);
+      nCarrinho.innerText = cart;
+    }))
+
+    infos.addEventListener("click", e => {
+      console.log(e)
+      e.preventDefault();
+      window.localStorage.setItem("Cliente", cliente.value);
+      window.localStorage.setItem("Endereço", endereco.value);
+    })
+
+  </script>
+</body>
+</html>
